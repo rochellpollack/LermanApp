@@ -1,85 +1,62 @@
 package com.example.rachel.lermanapp;
 
-import android.app.LoaderManager;
-import android.content.Loader;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.content.Loader;
 import android.view.ViewGroup;
+import android.database.Cursor;
 import android.widget.ListView;
+import android.app.LoaderManager;
+import android.widget.ListAdapter;
+import android.view.LayoutInflater;
 import android.widget.SimpleCursorAdapter;
 
 import com.example.rachel.lermanapp.Database.LermanFamilyContract;
 import com.example.rachel.lermanapp.Database.LermanFamilyDatabase;
 
-/**
- * Created by Rachel on 1/28/2016.
- */
+
 public class ContactsFragment extends android.support.v4.app.Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>{
-
-    //locations Database
-    private LermanFamilyDatabase lermanFamilyDatabase;
-
-    private Cursor contacts;
-
-    private ListView lvContacts;
-
-    SimpleCursorAdapter adapter;
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+        Cursor contacts = null;
+        ListView lvContacts = null;
+        ListAdapter adapter = null;
+
         View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
 
+        String[] from = {
+            LermanFamilyContract.ContactsTable.COL_CONTACTS_FIRST_NAME,
+            LermanFamilyContract.ContactsTable.COL_CONTACTS_SPOUSE_NAME,
+            LermanFamilyContract.ContactsTable.COL_CONTACTS_LAST_NAME
+        };
 
+        int [] to = {
+                R.id.tvContactFirstName,
+                R.id.tvContactSpouseName,
+                R.id.tvContactLastName
+        };
 
-        // To and from []s for adapter
-        String[] from = {LermanFamilyContract.ContactsTable.COL_CONTACTS_FIRST_NAME,
-        LermanFamilyContract.ContactsTable.COL_CONTACTS_SPOUSE_NAME,LermanFamilyContract.ContactsTable.COL_CONTACTS_LAST_NAME};
+        LermanFamilyDatabase lermanFamilyDatabase = new LermanFamilyDatabase(getActivity());
 
-        int [] to = {R.id.tvContactFirstName,R.id.tvContactSpouseName,R.id.tvContactLastName};
+        contacts = lermanFamilyDatabase.getContacts();
 
-        //instantiating the database
-        lermanFamilyDatabase = new LermanFamilyDatabase(getActivity());
+        adapter = new SimpleCursorAdapter(
+            getActivity(),
+            R.layout.list_item_contact,
+            contacts,
+            from,
+            to,
+            0
+        );
 
-        contacts = getActivity().getContentResolver().query(LermanFamilyContract.ContactsTable.CONTENT_URI,
-                new String[]{"0 _id", LermanFamilyContract.ContactsTable.COL_CONTACTS_PEOPLE_ID,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_FIRST_NAME,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_LAST_NAME,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_SPOUSE_NAME,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_ADDRESS,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_CITY,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_STATE,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_ZIP,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_HOME_NUMBER,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_CELL_NUMBER,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_SPOUSES_CELL_NUMBER,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_EMAIL_ADDRESS,
-                        LermanFamilyContract.ContactsTable.COL_CONTACTS_SPOUSES_EMAIL_ADDRESS
-                },
-                null,
-                null,
-                null);
-
-        //converting the data from the cursor object to the listview
-        adapter = new SimpleCursorAdapter(getActivity(),
-                R.layout.list_item_contact,
-                contacts,
-                from,
-                to);
-
-        //set the adapter
+        lvContacts = (ListView) rootView.findViewById(R.id.lv_contacts);
         lvContacts.setAdapter(adapter);
 
-
-        return inflater.inflate(R.layout.fragment_contacts, container, false);
-
+        return rootView;
     }
 
     @Override

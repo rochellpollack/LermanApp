@@ -24,7 +24,13 @@ public class LermanFamilyDatabase extends SQLiteAssetHelper {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-        String[] sqlSelect = {"0 _id", LermanFamilyContract.ContactsTable.COL_CONTACTS_PEOPLE_ID, LermanFamilyContract.ContactsTable.COL_CONTACTS_FIRST_NAME, LermanFamilyContract.ContactsTable.COL_CONTACTS_SPOUSE_NAME, LermanFamilyContract.ContactsTable.COL_CONTACTS_LAST_NAME};
+        String[] sqlSelect = {
+                "0 _id",
+                LermanFamilyContract.ContactsTable.COL_CONTACTS_PEOPLE_ID,
+                LermanFamilyContract.ContactsTable.COL_CONTACTS_FIRST_NAME,
+                LermanFamilyContract.ContactsTable.COL_CONTACTS_SPOUSE_NAME,
+                LermanFamilyContract.ContactsTable.COL_CONTACTS_LAST_NAME
+        };
 
         String sqlTables = LermanFamilyContract.ContactsTable.TABLE_NAME;
 
